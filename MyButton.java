@@ -5,7 +5,7 @@ public class MyButton extends JButton{
 	
 	private int number = -1;
 	private ImageIcon neg = new ImageIcon("background1.jpg");
-	private ImageIcon pos;
+	private ImageIcon pos = null;
 	private ImageIcon current;
 	
 	public MyButton(int number, Color color){
