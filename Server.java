@@ -10,6 +10,7 @@ public class Server{
 	protected static boolean[] readyState = {true,false,false,false};
 	protected static String[] playerName = {"player1","player2","player3","player4"};
 	protected static int round = -1;
+	protected static int rounds = 1;
 	
 	public static void main(String[] args) throws IOException{
 		ServerSocket serverSocket = new ServerSocket(6666); //建立服務端
@@ -110,12 +111,16 @@ class ServerThread extends Server implements Runnable {
 	}
 	
 	public void nextPlayer() throws IOException{
-		round = (round+1)%4;
+		round++;
+		if (round>3){
+			rounds++;
+			round=0;
+		}
 		PrintWriter out = null;
 		synchronized (sockets){
 			for (Socket sc: sockets){
 				out = new PrintWriter(sc.getOutputStream(),true);
-				out.println("RightOfFlop "+round);
+				out.println("RightOfFlop "+round+" "+rounds);
 			}
 		}
 	}

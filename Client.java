@@ -104,7 +104,7 @@ public class Client{
 			player.startGame();
 			break;
 		case "RightOfFlop":
-			player.startFlop(Integer.parseInt(str[1]));
+			player.startFlop(Integer.parseInt(str[1]),Integer.parseInt(str[2]));
 			break;
 		case "Flop":
 			player.flopCard(Integer.parseInt(str[1]));
@@ -449,10 +449,10 @@ class Game extends JFrame {
 	private void playerButtonCloseSet(){
 		ready.setEnabled(false);
 	}
-	public void startFlop(int number){
+	public void startFlop(int number,int round){
 		if (playerNumber == number){
 			flop = true;
-			chatbox.append("System: your term\n");
+			chatbox.append("System: round "+round+" your term\n");
 		}
 	}
 	public void flopCard(int number){
