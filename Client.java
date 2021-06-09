@@ -113,7 +113,7 @@ public class Client{
 			player.flowCard(Integer.parseInt(str[1]));
 			break;
 		case "Add":
-			player.addPoint(Integer.parseInt(str[1]));
+			player.addPoint(Integer.parseInt(str[1]),Integer.parseInt(str[2]));
 			break;
 		case "SetImage":
 			player.setButtonImage(Integer.parseInt(str[1]),str[2]);
@@ -170,6 +170,7 @@ class Game extends JFrame {
 	String[] playerName = {"player1","player2","player3","player4"}; // player name
 	boolean[] readyState = {false,false,false,false}; // record current player status
 	int[] playerScore = {0,0,0,0}; // player current score
+	int correctScore = 10; // player add score when guess right
 	boolean flop = false; // if player has authority to flop
 	private boolean[] hasBeenOpened; // an array to determine if card has been opened
 	private ImageIcon[] cardImage; // an array represent card
@@ -465,8 +466,8 @@ class Game extends JFrame {
 		gameBtn[number].repaint();
 		hasBeenOpened[number] = false;
 	}
-	public void addPoint(int n){
-		playerScore[n]+=10;
+	public void addPoint(int n,int score){
+		playerScore[n]+=score;
 		score[n].setText(String.valueOf(playerScore[n]));
 	}
 	public void setButtonImage(int n,String url){
@@ -502,8 +503,9 @@ class Game extends JFrame {
 	}
 	private void compareResult(){
 		if (gameBtn[firstOpen].getImageURL().equals(gameBtn[secondOpen].getImageURL())){
-			addPoint(playerNumber);
-			client.deliver("Add "+playerNumber);
+			client.deliver("Add "+playerNumber+String.valueOf(correctScore));
+			addPoint(playerNumber,correctScore);
+			correctScore+=10;
 			firstOpen = -1;
 			secondOpen = -1;
 		}else{
@@ -519,6 +521,7 @@ class Game extends JFrame {
 		client.deliver("RoundEnd");
 		firstOpen = -1;
 		secondOpen = -1;
+		correctScore=10;
 	}
 /***************************Start play game***********************************/
 }
