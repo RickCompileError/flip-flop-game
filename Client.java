@@ -466,8 +466,8 @@ class Game extends JFrame {
 		gameBtn[number].repaint();
 		hasBeenOpened[number] = false;
 	}
-	public void addPoint(int n,int score){
-		playerScore[n]+=score;
+	public void addPoint(int n,int s){
+		playerScore[n]+=s;
 		score[n].setText(String.valueOf(playerScore[n]));
 	}
 	public void setButtonImage(int n,String url){
@@ -521,7 +521,7 @@ class Game extends JFrame {
 		client.deliver("RoundEnd");
 		firstOpen = -1;
 		secondOpen = -1;
-		correctScore=10;
+		correctScore = 10;
 	}
 /***************************Start play game***********************************/
 }
