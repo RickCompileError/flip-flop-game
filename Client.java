@@ -503,7 +503,7 @@ class Game extends JFrame {
 	}
 	private void compareResult(){
 		if (gameBtn[firstOpen].getImageURL().equals(gameBtn[secondOpen].getImageURL())){
-			client.deliver("Add "+playerNumber+String.valueOf(correctScore));
+			client.deliver("Add "+playerNumber+" "+String.valueOf(correctScore));
 			addPoint(playerNumber,correctScore);
 			correctScore+=10;
 			firstOpen = -1;
