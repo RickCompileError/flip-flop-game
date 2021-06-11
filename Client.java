@@ -195,8 +195,8 @@ class Game extends JFrame {
 		JLabel t1 = new JLabel("Name: ");
 		JLabel t2 = new JLabel("IP: ");
 		JLabel t3 = new JLabel("Port: ");
-		PlayerName = new JTextField("Rick",20);
-		IPAddress = new JTextField("192.168.2.105",20);
+		PlayerName = new JTextField("",20);
+		IPAddress = new JTextField("localhost",20);
 		PortNumber = new JTextField("6666",20);
 		confirm = new JButton("OK");
 		mmb = new MyMenuBar();
@@ -270,6 +270,8 @@ class Game extends JFrame {
 		
         JLabel levelLabel = new JLabel("Choose level");
 		
+		JButton reset = new JButton("Reset");
+		
         ButtonGroup buttonGroup = new ButtonGroup();
 		rb = new JRadioButton[4];
         ItemListener degree = new ItemListener(){
@@ -293,9 +295,10 @@ class Game extends JFrame {
 		
         control.add(levelLabel, new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(5, 5, 5, 5), 0, 0));
 		for (int i=0;i<4;i++)
-			control.add(rb[i], new GridBagConstraints(i, 1, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(5, 5, 5, 5), 0, 0));
-		control.add(start, new GridBagConstraints(4, 0, 1, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.BOTH, new Insets(5, 5, 5, 5), 0, 0));
-		control.add(ready, new GridBagConstraints(4, 1, 1, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.BOTH, new Insets(5, 5, 5, 5), 0, 0));
+			control.add(rb[i], new GridBagConstraints(i+1, 0, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(5, 5, 5, 5), 0, 0));
+		control.add(reset, new GridBagConstraints(4, 1, 1, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.BOTH, new Insets(5, 5, 5, 5), 0, 0));
+		control.add(start, new GridBagConstraints(2, 1, 1, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.BOTH, new Insets(5, 5, 5, 5), 0, 0));
+		control.add(ready, new GridBagConstraints(3, 1, 1, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.BOTH, new Insets(5, 5, 5, 5), 0, 0));
 		control.setBorder(BorderFactory.createTitledBorder("Control"));
 		
 		return control;
