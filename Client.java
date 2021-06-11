@@ -200,7 +200,7 @@ class Game extends JFrame {
 		JLabel t2 = new JLabel("IP: ");
 		JLabel t3 = new JLabel("Port: ");
 		PlayerName = new JTextField("Rick",20);
-		IPAddress = new JTextField("localhost",20);
+		IPAddress = new JTextField("192.168.2.105",20);
 		PortNumber = new JTextField("6666",20);
 		confirm = new JButton("OK");
 		mmb = new MyMenuBar();
