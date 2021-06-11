@@ -118,6 +118,9 @@ public class Client{
 		case "SetImage":
 			player.setButtonImage(Integer.parseInt(str[1]),str[2]);
 			break;
+		case "Reset":
+			player.reset();
+			break;
 		case "Close":
 			try{
 				client.close(); //關閉socket
@@ -152,6 +155,7 @@ class Game extends JFrame {
 	MyButton[] gameBtn; // game panel game button
 	JButton start; // control panel start button
 	JButton ready; // control panel ready button
+	JButton reset; // control panel reset button
 	JRadioButton[] rb; // control panel level button
 	JTextArea chatbox; // chatbox panel chat room
 	JTextField message; // chatbox panel input message field
@@ -195,7 +199,7 @@ class Game extends JFrame {
 		JLabel t1 = new JLabel("Name: ");
 		JLabel t2 = new JLabel("IP: ");
 		JLabel t3 = new JLabel("Port: ");
-		PlayerName = new JTextField("",20);
+		PlayerName = new JTextField("Rick",20);
 		IPAddress = new JTextField("localhost",20);
 		PortNumber = new JTextField("6666",20);
 		confirm = new JButton("OK");
@@ -268,9 +272,11 @@ class Game extends JFrame {
 		ready.addActionListener(new GameConfirmAction(this));
 		ready.setFocusable(false);
 		
-        JLabel levelLabel = new JLabel("Choose level");
+		reset = new JButton("Reset");
+		reset.addActionListener(new GameConfirmAction(this));
+		reset.setFocusable(false);
 		
-		JButton reset = new JButton("Reset");
+        JLabel levelLabel = new JLabel("Choose level");
 		
         ButtonGroup buttonGroup = new ButtonGroup();
 		rb = new JRadioButton[4];
@@ -405,6 +411,22 @@ class Game extends JFrame {
 		gaming_zone.repaint();
 		pack();
 	}
+	public void reset(){
+		if (playerNumber==0) honorButtonOpenSet();
+		else playerButtonOpenSet();
+		for (int i=0;i<4;i++){
+			readyState[i]=false;
+			playerScore[i]=0;
+			String state = readyState[i]?"Ready":"Unready";
+			score[i].setText(state);
+		}
+		correctScore = 10;
+		flop = false;
+		firstOpen=-1;
+		secondOpen=-1;
+		renewLevelSize();
+		client.deliver("Reset");
+	}
 /****************************Control button action****************************/	
 /***************************Instruction from server***************************/
 	public void setPlayerNumber(int n){
@@ -413,10 +435,15 @@ class Game extends JFrame {
 		if (playerNumber != 0) playerButtonOpenSet();
 	}
 	private void honorButtonOpenSet(){
+		start.setEnabled(true);
 		ready.setEnabled(false);
+		reset.setEnabled(false);
+		for (JRadioButton tmp: rb) tmp.setEnabled(true);
 	}
 	private void playerButtonOpenSet(){
 		start.setEnabled(false);
+		ready.setEnabled(true);
+		reset.setEnabled(false);
 		for (JRadioButton tmp: rb) tmp.setEnabled(false);
 	}
 	public void setPlayerName(int n, String name){
@@ -448,6 +475,7 @@ class Game extends JFrame {
 	}
 	private void honorButtonCloseSet(){
 		start.setEnabled(false);
+		reset.setEnabled(true);
 		for (JRadioButton tmp: rb) tmp.setEnabled(false);
 	}
 	private void playerButtonCloseSet(){
@@ -555,5 +583,6 @@ class GameConfirmAction implements ActionListener{
 		JButton tmp = (JButton)e.getSource();
 		if (tmp.getText().equals("Start")) f.start();
 		if (tmp.getText().equals("Ready")) f.ready();
+		if (tmp.getText().equals("Reset")) f.reset();
 	}
 }

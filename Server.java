@@ -73,6 +73,10 @@ class ServerThread extends Server implements Runnable {
 				case "RoundEnd":
 					nextPlayer();
 					break;
+				case "Reset":
+					print(line);
+					reset();
+					break;
 				default: //使用print function輸出內容
 					print(line);
 				}
@@ -128,6 +132,12 @@ class ServerThread extends Server implements Runnable {
 	public void setReady(int i, boolean b) throws IOException{
 		readyState[i] = b;
 		print("Ready "+i+" "+b);
+	}
+	
+	public void reset(){
+		for (int i=0;i<4;i++) readyState[i] = (i==0)?true:false;
+		round = -1;
+		rounds = 1;
 	}
 	
 	public void closeConnect(){ //斷開連線的function
