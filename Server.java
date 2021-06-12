@@ -23,6 +23,7 @@ public class Server{
 				System.out.println("Waiting for client on port " + serverSocket.getLocalPort() + "...");
 				Socket accept = serverSocket.accept(); //阻塞等待客戶端連線
 				player++;
+				playerAmount++;
 				synchronized (sockets){
 					sockets.add(accept); //接受客戶端請求
 				}
