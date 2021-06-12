@@ -437,6 +437,7 @@ class Game extends JFrame {
 			String state = readyState[i]?"Ready":"Unready";
 			score[i].setText(state);
 		}
+		chatbox.setText("");
 		correctScore = 10;
 		flop = false;
 		firstOpen=-1;
