@@ -32,7 +32,6 @@ public class Client{
 		this.port = port;
 		try{
 			client = new Socket(address,port); //建立連線指定host與port
-			System.out.println(client==null);
 			//獲取系統標準輸入流
 			reader = new BufferedReader(new InputStreamReader(System.in)); //設定reader為鍵盤輸入的值
 			out = new PrintWriter(client.getOutputStream(),true); //設定out為socket輸出的內容
@@ -43,7 +42,6 @@ public class Client{
 			//input(); //呼叫input()這個function
 		}
 		catch (IOException e){ //若無法執行try，則顯示此錯誤訊息
-			if (client==null) System.out.println("NULL");
 			System.out.println("Can't connect to Server.");
 		}
 		return (client!=null);
@@ -101,6 +99,9 @@ public class Client{
 			break;
 		case "Ready":
 			player.setReadyState(Integer.parseInt(str[1]),str[2]);
+			break;
+		case "CanStart":
+			player.start();
 			break;
 		case "Start":
 			player.startGame();
@@ -385,8 +386,10 @@ class Game extends JFrame {
 	}
 	
 /****************************Control button action****************************/	
+	public void checkStart(){
+		client.deliver("CheckStart");
+	}
 	public void start(){
-		for (int i=1;i<4;i++) if (!readyState[i]) return;
 		client.deliver("Start");
 		cardImage = GenerateImage.generate(level,widthAmount[level]*heightAmount[level]);
 		for (int i=0;i<gameBtn.length;i++){
@@ -588,7 +591,7 @@ class GameConfirmAction implements ActionListener{
 	
 	public void actionPerformed(ActionEvent e){
 		JButton tmp = (JButton)e.getSource();
-		if (tmp.getText().equals("Start")) f.start();
+		if (tmp.getText().equals("Start")) f.checkStart();
 		if (tmp.getText().equals("Ready")) f.ready();
 		if (tmp.getText().equals("Reset")) f.reset();
 	}

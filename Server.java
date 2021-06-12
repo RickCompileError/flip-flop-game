@@ -9,15 +9,16 @@ public class Server{
 	protected static int player = -1;
 	protected static boolean[] readyState = {true,false,false,false};
 	protected static String[] playerName = {"player1","player2","player3","player4"};
+	protected static int playerAmount = 0;
 	protected static int round = -1;
 	protected static int rounds = 1;
 	protected static int level = 0;
-	protected static int[] amount = {10,20,30,40};
+	protected static int[] cardAmount = {10,20,30,40};
 	protected static int countAdd = 0;
 	
 	public static void main(String[] args) throws IOException{
 		ServerSocket serverSocket = new ServerSocket(6666); //建立服務端
-		while(player<3) {
+		while(playerAmount<=4) {
 			try{
 				System.out.println("Waiting for client on port " + serverSocket.getLocalPort() + "...");
 				Socket accept = serverSocket.accept(); //阻塞等待客戶端連線
@@ -65,6 +66,9 @@ class ServerThread extends Server implements Runnable {
 				case "Name": // set user name
 					playerName[player] = instruction[1]; 
 					socketName = instruction[1];
+					break;
+				case "CheckStart":
+					checkStart();
 					break;
 				case "Start":
 					print(line);
@@ -125,9 +129,16 @@ class ServerThread extends Server implements Runnable {
 		}
 	}
 	
+	public void checkStart() throws IOException{
+		PrintWriter out = null;
+		out = new PrintWriter(socket.getOutputStream(),true);
+		for (int i=0;i<playerAmount;i++) if (!readyState[i]) return;
+		out.println("CanStart");
+	}
+	
 	public void nextPlayer() throws IOException{
 		round++;
-		if (round>3){
+		if (round>playerAmount){
 			rounds++;
 			round=0;
 		}
@@ -147,7 +158,7 @@ class ServerThread extends Server implements Runnable {
 	
 	public void detectEnd() throws IOException{
 		countAdd++;
-		if (countAdd == amount[level]){
+		if (countAdd == cardAmount[level]){
 			print("GameOver");
 			reset();
 		}
