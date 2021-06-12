@@ -11,6 +11,9 @@ public class Server{
 	protected static String[] playerName = {"player1","player2","player3","player4"};
 	protected static int round = -1;
 	protected static int rounds = 1;
+	protected static int level = 0;
+	protected static int[] amount = {10,20,30,40};
+	protected static int countAdd = 0;
 	
 	public static void main(String[] args) throws IOException{
 		ServerSocket serverSocket = new ServerSocket(6666); //建立服務端
@@ -67,6 +70,10 @@ class ServerThread extends Server implements Runnable {
 					print(line);
 					nextPlayer();
 					break;
+				case "Level":
+					print(line);
+					level = Integer.parseInt(instruction[1]);
+					break;
 				case "Ready":
 					setReady(Integer.parseInt(instruction[1]),Boolean.valueOf(instruction[2]));
 					break;
@@ -76,6 +83,10 @@ class ServerThread extends Server implements Runnable {
 				case "Reset":
 					print(line);
 					reset();
+					break;
+				case "Add":
+					print(line);
+					detectEnd();
 					break;
 				default: //使用print function輸出內容
 					print(line);
@@ -134,10 +145,19 @@ class ServerThread extends Server implements Runnable {
 		print("Ready "+i+" "+b);
 	}
 	
+	public void detectEnd() throws IOException{
+		countAdd++;
+		if (countAdd == amount[level]){
+			print("GameOver");
+			reset();
+		}
+	}
+	
 	public void reset(){
 		for (int i=0;i<4;i++) readyState[i] = (i==0)?true:false;
 		round = -1;
 		rounds = 1;
+		countAdd=0;
 	}
 	
 	public void closeConnect(){ //斷開連線的function

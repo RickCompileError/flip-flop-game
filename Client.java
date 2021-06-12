@@ -32,6 +32,7 @@ public class Client{
 		this.port = port;
 		try{
 			client = new Socket(address,port); //建立連線指定host與port
+			System.out.println(client==null);
 			//獲取系統標準輸入流
 			reader = new BufferedReader(new InputStreamReader(System.in)); //設定reader為鍵盤輸入的值
 			out = new PrintWriter(client.getOutputStream(),true); //設定out為socket輸出的內容
@@ -42,14 +43,15 @@ public class Client{
 			//input(); //呼叫input()這個function
 		}
 		catch (IOException e){ //若無法執行try，則顯示此錯誤訊息
+			if (client==null) System.out.println("NULL");
 			System.out.println("Can't connect to Server.");
 		}
-		return isConnected();
+		return (client!=null);
 	}
 	
-	public boolean isConnected(){
+	/* public boolean isConnected(){
 		return client.isConnected();
-	}
+	} */
 	
 	public Thread getThread(){ //建立一個執行緒用於讀取伺服器的資訊
 		return new Thread(new Runnable(){ //產生一個thread，不斷接收server廣播出來的訊息
@@ -119,7 +121,7 @@ public class Client{
 			player.setButtonImage(Integer.parseInt(str[1]),str[2]);
 			break;
 		case "Reset":
-			player.reset();
+			player.systemReset();
 			break;
 		case "Close":
 			try{
@@ -412,19 +414,7 @@ class Game extends JFrame {
 		pack();
 	}
 	public void reset(){
-		if (playerNumber==0) honorButtonOpenSet();
-		else playerButtonOpenSet();
-		for (int i=0;i<4;i++){
-			readyState[i]=false;
-			playerScore[i]=0;
-			String state = readyState[i]?"Ready":"Unready";
-			score[i].setText(state);
-		}
-		correctScore = 10;
-		flop = false;
-		firstOpen=-1;
-		secondOpen=-1;
-		renewLevelSize();
+		systemReset();
 		client.deliver("Reset");
 	}
 /****************************Control button action****************************/	
@@ -434,6 +424,23 @@ class Game extends JFrame {
 		if (playerNumber == 0) honorButtonOpenSet();
 		if (playerNumber != 0) playerButtonOpenSet();
 	}
+	
+	public void systemReset(){
+		if (playerNumber==0) honorButtonOpenSet();
+		else playerButtonOpenSet();
+		for (int i=0;i<4;i++){
+			readyState[i] = (i==0)?true:false;
+			playerScore[i]=0;
+			String state = readyState[i]?"Ready":"Unready";
+			score[i].setText(state);
+		}
+		correctScore = 10;
+		flop = false;
+		firstOpen=-1;
+		secondOpen=-1;
+		renewLevelSize();
+	}
+		
 	private void honorButtonOpenSet(){
 		start.setEnabled(true);
 		ready.setEnabled(false);

@@ -104,7 +104,7 @@ public class MyMenuBar {
   	    clip.open(audioStream);
 	    clip.loop(Clip.LOOP_CONTINUOUSLY);
 	    clip.start();
-		// clip.stop(); // for coding to reduce noise
+		clip.stop(); // for coding to reduce noise
 	}
 	
 	public static void StopMusic()
