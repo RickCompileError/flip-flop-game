@@ -139,7 +139,7 @@ class ServerThread extends Server implements Runnable {
 	
 	public void nextPlayer() throws IOException{
 		round++;
-		if (round>playerAmount){
+		if (round>playerAmount-1){
 			rounds++;
 			round=0;
 		}
