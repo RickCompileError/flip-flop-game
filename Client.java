@@ -124,6 +124,9 @@ public class Client{
 		case "Reset":
 			player.systemReset();
 			break;
+		case "GameOver":
+			player.systemReset();
+			break;
 		case "Close":
 			try{
 				client.close(); //關閉socket
