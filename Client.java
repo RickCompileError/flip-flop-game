@@ -432,6 +432,9 @@ class Game extends JFrame {
 	}
 	
 	public void systemReset(){
+		new Settlement(playerName,playerScore);
+		//Settlement.update(playerName,playerScore);
+		//Settlement.out();
 		if (playerNumber==0) honorButtonOpenSet();
 		else playerButtonOpenSet();
 		for (int i=0;i<4;i++){
