@@ -1,0 +1,25 @@
+Name Rick
+GetInformation
+Message 0 123
+CheckStart
+Start
+SetImage 0 level0/04.jpg
+SetImage 1 level0/04.jpg
+SetImage 2 level0/00.jpg
+SetImage 3 level0/07.jpg
+SetImage 4 level0/03.jpg
+SetImage 5 level0/00.jpg
+SetImage 6 level0/06.jpg
+SetImage 7 level0/08.jpg
+SetImage 8 level0/06.jpg
+SetImage 9 level0/08.jpg
+SetImage 10 level0/01.jpg
+SetImage 11 level0/05.jpg
+SetImage 12 level0/05.jpg
+SetImage 13 level0/09.jpg
+SetImage 14 level0/02.jpg
+SetImage 15 level0/09.jpg
+SetImage 16 level0/01.jpg
+SetImage 17 level0/03.jpg
+SetImage 18 level0/07.jpg
+SetImage 19 level0/02.jpg

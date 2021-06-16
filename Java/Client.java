@@ -193,7 +193,7 @@ class Game extends JFrame {
 		setContentPane(main);
 		setTimer();
 		setTitle("MakeYouCry");
-		setResizable(false);
+		setResizable(true);
 		setVisible(true);
 		pack();
 		setLocationRelativeTo(null);

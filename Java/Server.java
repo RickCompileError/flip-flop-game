@@ -17,6 +17,7 @@ public class Server{
 	protected static int countAdd = 0;
 	
 	public static void main(String[] args) throws IOException{
+		initialLog();
 		ServerSocket serverSocket = new ServerSocket(6666); //建立服務端
 		while(playerAmount<=4) {
 			try{
@@ -36,6 +37,20 @@ public class Server{
 			}
 		}
 		serverSocket.close(); //關閉伺服器
+	}
+	
+	public static void initialLog(){
+        try{
+			File file =new File("game_detail.txt");
+			if (file.exists()) file.delete();
+			if(!file.exists()) file.createNewFile();
+        }
+        catch(FileNotFoundException e) {
+            System.exit(0);
+        }
+		catch(IOException e){
+			System.exit(0);
+		}
 	}
 }
 
@@ -60,6 +75,7 @@ class ServerThread extends Server implements Runnable {
 				System.out.println("From "+socketName+": "+line); //debug
 				String[] instruction = line.split(" ");
 				if (line == null) break; //當達成條件時則跳出迴圈
+				writetxt(socketName ,line);
 				switch (instruction[0]){
 				case "GetInformation": // deliver another player information (name and state)
 					transmitInfo();
@@ -185,6 +201,19 @@ class ServerThread extends Server implements Runnable {
 		}
 		catch (IOException e){ //異常時顯示錯誤訊息
 			System.out.println("Close not sucess.");
+		}
+	}
+
+	public void writetxt(String socketName,String line){
+		try{
+			File file =new File("game_detail.txt");
+			FileWriter fileWritter = new FileWriter(file.getName(),true);
+			BufferedWriter bufferWritter = new BufferedWriter(fileWritter);
+			bufferWritter.write(line);
+			bufferWritter.newLine();
+			bufferWritter.close();
+		}catch(IOException e){
+			e.printStackTrace();
 		}
 	}
 }

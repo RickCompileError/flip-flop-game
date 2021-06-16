@@ -1,2 +1,2 @@
-javac -encoding utf-8 *.java
+javac -encoding utf-8 Java/*.java
 pause

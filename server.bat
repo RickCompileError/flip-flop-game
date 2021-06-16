@@ -1,2 +1,2 @@
-java Server
+java Java/Server
 pause
