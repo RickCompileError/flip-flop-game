@@ -160,6 +160,8 @@ class ServerThread extends Server implements Runnable {
 	public void detectEnd() throws IOException{
 		countAdd++;
 		if (countAdd == cardAmount[level]){
+			PrintWriter out = new PrintWriter(socket.getOutputStream(),true);
+			out.println("GameOver");
 			print("GameOver");
 			reset();
 		}

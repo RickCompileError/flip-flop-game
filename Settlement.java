@@ -11,16 +11,36 @@ import java.io.*;
 
 public class Settlement { 
 
-	static JPanel panel = new JPanel();
-	static JLabel rank1,rank2,rank3,rank4;
-	static JLabel player1,player2,player3,player4;
-	static JLabel score1,score2,score3,score4;
-	 public Settlement(String[] name,int[] s){
+	JPanel panel = new JPanel();
+	JLabel rank1,rank2,rank3,rank4;
+	JLabel player1,player2,player3,player4;
+	JLabel score1,score2,score3,score4;
+	Game game;
+	
+	public Settlement(Game game, String[] name, int[] s){
+		this.game = game;
+		sort(name,s);
 		update(name,s);
 		out();
-	 }
-	 
-	public static void update(String[] name,int[] s){
+	}
+	
+	private void sort(String[] name, int[] s){
+		String tmps;
+		int tmpi;
+		for (int i=0;i<s.length;i++){
+			int mxInd = i;
+			for (int j=i+1;j<s.length;j++)
+				if (s[j]>s[mxInd]) mxInd = j;
+			tmps = name[i];
+			name[i] = name[mxInd];
+			name[mxInd] = tmps;
+			tmpi = s[i];
+			s[i] = s[mxInd];
+			s[mxInd] = tmpi;
+		}
+	}
+	
+	private void update(String[] name, int[] s){
 		rank1 = new JLabel("No.1");
 		rank2 = new JLabel("No.2");
 		rank3 = new JLabel("No.3");
@@ -35,7 +55,11 @@ public class Settlement {
 		score4 = new JLabel(String.valueOf(s[3]));
 	}
 	
-	public static JPanel getPanel(){
+	private void out(){
+		JOptionPane.showMessageDialog(game,getPanel(),"result",JOptionPane.PLAIN_MESSAGE);
+	}
+	
+	private JPanel getPanel(){
 		panel.removeAll();
 		panel.setLayout(new GridLayout(4,3));
 		panel.add(rank1);
@@ -52,11 +76,6 @@ public class Settlement {
 		panel.add(score4);
 		panel.revalidate();
 		panel.repaint();
-	return panel;	
+		return panel;
 	}
-	
-	public static void out(){
-		JOptionPane.showMessageDialog(null,getPanel(),"result",JOptionPane.PLAIN_MESSAGE);
-	}
-
 }

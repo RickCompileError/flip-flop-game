@@ -125,7 +125,7 @@ public class Client{
 			player.systemReset();
 			break;
 		case "GameOver":
-			player.systemReset();
+			player.settlement();
 			break;
 		case "Close":
 			try{
@@ -431,10 +431,12 @@ class Game extends JFrame {
 		if (playerNumber != 0) playerButtonOpenSet();
 	}
 	
+	public void settlement(){
+		new Settlement(this,playerName,playerScore);
+		systemReset();
+	}
+	
 	public void systemReset(){
-		new Settlement(playerName,playerScore);
-		//Settlement.update(playerName,playerScore);
-		//Settlement.out();
 		if (playerNumber==0) honorButtonOpenSet();
 		else playerButtonOpenSet();
 		for (int i=0;i<4;i++){
