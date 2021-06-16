@@ -41,7 +41,7 @@ public class Server{
 	
 	public static void initialLog(){
         try{
-			File file =new File("game_detail.txt");
+			File file =new File("../game_detail.txt");
 			if (file.exists()) file.delete();
 			if(!file.exists()) file.createNewFile();
         }
@@ -206,8 +206,8 @@ class ServerThread extends Server implements Runnable {
 
 	public void writetxt(String socketName,String line){
 		try{
-			File file =new File("game_detail.txt");
-			FileWriter fileWritter = new FileWriter(file.getName(),true);
+			File file =new File("../game_detail.txt");
+			FileWriter fileWritter = new FileWriter(file,true);
 			BufferedWriter bufferWritter = new BufferedWriter(fileWritter);
 			bufferWritter.write(line);
 			bufferWritter.newLine();

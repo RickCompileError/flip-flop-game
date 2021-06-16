@@ -1,2 +1,3 @@
-java Java/Client
+cd Java/
+java Client
 pause
