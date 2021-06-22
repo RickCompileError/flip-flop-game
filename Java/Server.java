@@ -9,6 +9,7 @@ public class Server{
 	protected static int player = -1;
 	protected static boolean[] readyState = {true,false,false,false};
 	protected static String[] playerName = {"player1","player2","player3","player4"};
+	protected static int[] playerScore = {0,0,0,0};
 	protected static int playerAmount = 0;
 	protected static int round = -1;
 	protected static int rounds = 1;
@@ -107,6 +108,7 @@ class ServerThread extends Server implements Runnable {
 					break;
 				case "Add":
 					print(line);
+					addPoint(line);
 					detectEnd();
 					break;
 				default: //使用print function輸出內容
@@ -173,18 +175,25 @@ class ServerThread extends Server implements Runnable {
 		print("Ready "+i+" "+b);
 	}
 	
+	public void addPoint(String line){
+		String[] spl = line.split(" ");
+		playerScore[Integer.parseInt(spl[1])]+=Integer.parseInt(spl[2]);
+	}
+	
 	public void detectEnd() throws IOException{
 		countAdd++;
 		if (countAdd == cardAmount[level]){
 			PrintWriter out = new PrintWriter(socket.getOutputStream(),true);
 			out.println("GameOver");
 			print("GameOver");
+			writeResult();
 			reset();
 		}
 	}
 	
 	public void reset(){
 		for (int i=0;i<4;i++) readyState[i] = (i==0)?true:false;
+		for (int i=0;i<4;i++) playerScore[i] = 0;
 		round = -1;
 		rounds = 1;
 		countAdd=0;
@@ -213,6 +222,36 @@ class ServerThread extends Server implements Runnable {
 			bufferWritter.newLine();
 			bufferWritter.close();
 		}catch(IOException e){
+			e.printStackTrace();
+		}
+	}
+	
+	public void writeResult(){
+		String[] tmpName = new String[4];
+		for (int i=0;i<4;i++) tmpName[i] = playerName[i];
+		String tmps;
+		int tmpi;
+		for (int i=0;i<tmpName.length;i++){
+			int mxInd = i;
+			for (int j=i+1;j<tmpName.length;j++)
+				if (playerScore[j]>playerScore[mxInd]) mxInd = j;
+			tmps = playerName[i];
+			playerName[i] = playerName[mxInd];
+			playerName[mxInd] = tmps;
+			tmpi = playerScore[i];
+			playerScore[i] = playerScore[mxInd];
+			playerScore[mxInd] = tmpi;
+		}
+		try{
+			File file = new File("../game_result.txt");
+			BufferedWriter bw = new BufferedWriter(new FileWriter(file,true));
+			for (int i=0;i<4;i++){
+				bw.write("No."+(i+1)+" "+tmpName[i]+" "+playerScore[i]);
+				bw.newLine();
+			}
+			bw.newLine();
+			bw.close();
+		}catch (IOException e){
 			e.printStackTrace();
 		}
 	}
