@@ -22,7 +22,7 @@ class Replay extends JFrame {
 	private ImageIcon[] cardImage; // an array represent card
 	private boolean gameExist = false;
 	
-	public Replay(String filePath){ 
+	public Replay(String filePath){ //初始化Replay視窗，並判斷還有沒有record可以replay
 		try{
 			myPanel.setLayout(new BorderLayout());
 			setReader(filePath);
@@ -43,7 +43,7 @@ class Replay extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 
-	private void addButton(){  //設置按鈕
+	private void addButton(){  //加入操作按鈕
 		JPanel jp = new JPanel();
 		JButton startButton = new JButton("Start");
 		startButton.setFocusable(false);
@@ -88,7 +88,7 @@ class Replay extends JFrame {
 		myPanel.add(jp,BorderLayout.SOUTH);
 	}
 
-	private void setReader(String fp){ //讀取檔案
+	private void setReader(String fp){ //初始化讀取record的bufferedReader
 		File file = new File(fp);
 		try{
 			FileReader fr = new FileReader(file);
@@ -102,7 +102,7 @@ class Replay extends JFrame {
 		}
 	}
 	
-	private void findGame() throws IOException{ //讀取記錄檔中的紀錄
+	private void findGame() throws IOException{ //讀取記錄檔中的紀錄，判斷是否可以replay
 		String ins = null;
 		if (br!=null){
 			ins = br.readLine();
@@ -117,7 +117,7 @@ class Replay extends JFrame {
 		else if (ins.equals("Start")) gameExist = true;
 	}
 	
-	private void setGame() throws IOException{
+	private void setGame() throws IOException{ //若有紀錄可以replay的話就會執行次function設定版面，由buttons所組成
 		JPanel jp = new JPanel();
 		jp.setLayout(new GridLayout(heightAmount[level],widthAmount[level]));
 		gameBtn = new MyButton[heightAmount[level]*widthAmount[level]];
@@ -135,8 +135,8 @@ class Replay extends JFrame {
 		myPanel.add(jp,BorderLayout.CENTER);
 	}
 	
-	private void setNull(){  //若記錄檔的內容結束時
-		JLabel jl = new JLabel("No Record Can Replay!");
+	private void setNull(){  //若沒有紀錄可以重播時，就會執行此function
+		JLabel jl = new JLabel("No Record Can Replay!");  //顯示此內容在畫面上
 		jl.setFont(new Font("MV Boli",Font.ITALIC,20));
 		jl.setHorizontalTextPosition(JLabel.CENTER);
 		jl.setVerticalTextPosition(JLabel.CENTER);
@@ -145,12 +145,12 @@ class Replay extends JFrame {
 		myPanel.add(jl,BorderLayout.CENTER);
 	}
 	
-	private void start(){
+	private void start(){ //開始按鈕執行的function，開始重播
 		setTimer();
 		timer.start();
 	}
 	
-	private void next(){
+	private void next(){ //尋找下一輪的遊戲紀錄
 		myPanel.removeAll();
 		try{
 			findGame();
@@ -167,7 +167,7 @@ class Replay extends JFrame {
 		setLocationRelativeTo(null);
 	}
 	
-	public void setTimer(){
+	public void setTimer(){ //設定播放的速度
 		if (timer!=null) return;
 		timer = new Timer(100,new ActionListener(){
 			public void actionPerformed(ActionEvent e){
@@ -192,17 +192,17 @@ class Replay extends JFrame {
 		});
 	}
 	
-	private void flop(int n){
+	private void flop(int n){  //播放翻牌
 		gameBtn[n].showPos();
 		gameBtn[n].repaint();
 	}
 	
-	private void flow(int n){
+	private void flow(int n){  //播放蓋牌
 		gameBtn[n].showNeg();
 		gameBtn[n].repaint();
 	}
 	
-	private void gameOver(){
+	private void gameOver(){ //播放結束時執行此function
 		timer.stop();
 		next();
 	}
