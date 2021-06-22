@@ -24,7 +24,7 @@ public class Settlement {
 		out();
 	}
 	
-	private void sort(String[] name, int[] s){
+	private void sort(String[] name, int[] s){ //排序分數
 		String tmps;
 		int tmpi;
 		for (int i=0;i<s.length;i++){
@@ -40,7 +40,7 @@ public class Settlement {
 		}
 	}
 	
-	private void update(String[] name, int[] s){
+	private void update(String[] name, int[] s){ //把排序好的分數依序排名
 		rank1 = new JLabel("No.1");
 		rank2 = new JLabel("No.2");
 		rank3 = new JLabel("No.3");
@@ -55,11 +55,11 @@ public class Settlement {
 		score4 = new JLabel(String.valueOf(s[3]));
 	}
 	
-	private void out(){
+	private void out(){ //顯示結算畫面
 		JOptionPane.showMessageDialog(game,getPanel(),"result",JOptionPane.PLAIN_MESSAGE);
 	}
 	
-	private JPanel getPanel(){
+	private JPanel getPanel(){ //設置結算畫面
 		panel.removeAll();
 		panel.setLayout(new GridLayout(4,3));
 		panel.add(rank1);

@@ -12,7 +12,7 @@ public class MyMenuBar {
 	public Game f;
 
     public MyMenuBar() {
-		try {
+		try { //遊戲一開始會先預設BGM
 			StartMusic(music);
 		} catch (UnsupportedAudioFileException | IOException | LineUnavailableException e1) {
 			e1.printStackTrace();
@@ -20,7 +20,7 @@ public class MyMenuBar {
 	}
 
 
-    public void setmenu(Game f) {
+    public void setmenu(Game f) { //設置menubar
 		this.f = f;
         JMenuBar MBar = new JMenuBar();
         JMenu thefile = new JMenu("Set");
@@ -29,7 +29,7 @@ public class MyMenuBar {
 		JMenuItem choose = new JMenuItem("Choose BGM");
 		JMenuItem stop = new JMenuItem("Stop BGM");
 		JMenuItem play = new JMenuItem("Play BGM");
-			choose.addActionListener( new ActionListener() {
+			choose.addActionListener( new ActionListener() { //選擇BGM
 				public void actionPerformed(ActionEvent e){
 					JFileChooser fileChooser = new JFileChooser(new File(System.getProperty("user.dir")));
 					fileChooser.setFileFilter(new FileNameExtensionFilter(null,"wav"));
@@ -46,7 +46,7 @@ public class MyMenuBar {
 				}           
 			});
 			
-			stop.addActionListener( new ActionListener() {
+			stop.addActionListener( new ActionListener() { //暫停BGM
                 public void actionPerformed(ActionEvent e){
 					    try {
 							StopMusic();
@@ -57,7 +57,7 @@ public class MyMenuBar {
 				}
 			});
 					
-			play.addActionListener( new ActionListener() {
+			play.addActionListener( new ActionListener() { //繼續撥放BGM
                 public void actionPerformed(ActionEvent e){	
 					    try {
 							PlayMusic();
@@ -70,7 +70,7 @@ public class MyMenuBar {
 		JMenu color = new JMenu("Color");
         JMenuItem Pcolor = new JMenuItem("Primary Panel Background");  
 		JMenuItem Scolor = new JMenuItem("Secondary Panel Background");
-		ActionListener colorAction = new ActionListener(){
+		ActionListener colorAction = new ActionListener(){ //設置背景顏色
 			public void actionPerformed(ActionEvent e){
 				Color initialBackground = new Color(255, 255, 0);
 				Color background = JColorChooser.showDialog(null, "JColorChooser Sample", initialBackground);
@@ -94,13 +94,14 @@ public class MyMenuBar {
         f.setJMenuBar(MBar);
     }
 
-    public static void StartMusic(File file)
+    public static void StartMusic(File file) 
 	throws UnsupportedAudioFileException, IOException, LineUnavailableException{
 	    AudioInputStream audioStream = AudioSystem.getAudioInputStream(file);
-	    if (clip != null) {
+	    if (clip != null) { //若已經選擇BGM，則把BGM暫停
 	    	clip.stop();
 	    }
-  	    clip = AudioSystem.getClip();
+		//播放新選擇的BGM
+  	    clip = AudioSystem.getClip();  
   	    clip.open(audioStream);
 	    clip.loop(Clip.LOOP_CONTINUOUSLY);
 	    clip.start();

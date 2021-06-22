@@ -19,7 +19,7 @@ public class Server{
 	protected static int countAdd = 0;
 	
 	public static void main(String[] args) throws IOException{
-		initialLog();
+		initialLog(); //執行初始化紀錄檔function
 		ServerSocket serverSocket = new ServerSocket(6666); //建立服務端
 		while(playerAmount<=4) {
 			try{
@@ -41,11 +41,11 @@ public class Server{
 		serverSocket.close(); //關閉伺服器
 	}
 	
-	public static void initialLog(){
+	public static void initialLog(){ //初始化紀錄檔
         try{
-			File file =new File("../game_detail.txt");
-			if (file.exists()) file.delete();
-			if(!file.exists()) file.createNewFile();
+			File file =new File("../game_detail.txt"); 
+			if (file.exists()) file.delete(); //把舊的紀錄檔刪除
+			if(!file.exists()) file.createNewFile(); //創立新的紀錄檔
         }
         catch(FileNotFoundException e) {
             System.exit(0);
@@ -77,7 +77,8 @@ class ServerThread extends Server implements Runnable {
 				System.out.println("From "+socketName+": "+line); //debug
 				String[] instruction = line.split(" ");
 				if (line == null) break; //當達成條件時則跳出迴圈
-				writetxt(line);
+				writetxt(line); //把收到的內容寫入紀錄檔
+				//收到不同的字串，會去做相對應的處理
 				switch (instruction[0]){
 				case "GetInformation": // deliver another player information (name and state)
 					transmitInfo();
@@ -134,31 +135,31 @@ class ServerThread extends Server implements Runnable {
 		}
 	}
 	
-	public void transmitInfo() throws IOException{
+	public void transmitInfo() throws IOException{ //傳送玩家的詳細資訊
 		PrintWriter out = null;
 		out = new PrintWriter(socket.getOutputStream(),true);
-		out.println("Number "+player);
+		out.println("Number "+player); //告知客戶端他的玩家號碼
 		synchronized (sockets){
 			for (Socket sc: sockets){
 				out = new PrintWriter(sc.getOutputStream(),true);
 				for (int i=0;i<4;i++){
-					out.println("Name "+i+" "+playerName[i]);
-					out.println("State "+i+" "+readyState[i]);
+					out.println("Name "+i+" "+playerName[i]); //顯示玩家名稱
+					out.println("State "+i+" "+readyState[i]); //顯示玩家狀態
 				}
 			}
 		}
 	}
 	
-	public void checkStart() throws IOException{
+	public void checkStart() throws IOException{ //檢查玩家是否都已經準備
 		PrintWriter out = null;
 		out = new PrintWriter(socket.getOutputStream(),true);
 		for (int i=0;i<playerAmount;i++) if (!readyState[i]) return;
-		out.println("CanStart");
+		out.println("CanStart"); //當確定玩家都已經準備，則傳送可以開始的訊息給房主
 	}
 	
-	public void nextPlayer() throws IOException{
-		round++;
-		if (round>playerAmount-1){
+	public void nextPlayer() throws IOException{ //設置輪流翻牌
+		round++; 
+		if (round>playerAmount-1){ //round大於玩家數量時就回到第一個玩家開始翻牌
 			rounds++;
 			round=0;
 		}
@@ -166,39 +167,39 @@ class ServerThread extends Server implements Runnable {
 		synchronized (sockets){
 			for (Socket sc: sockets){
 				out = new PrintWriter(sc.getOutputStream(),true);
-				out.println("RightOfFlop "+round+" "+rounds);
+				out.println("RightOfFlop "+round+" "+rounds); //告知客戶端目前是幾號玩家可以翻牌，並顯示這是第幾回合
 			}
 		}
 	}
 	
 	public void setReady(int i, boolean b) throws IOException{
-		readyState[i] = b;
-		print("Ready "+i+" "+b);
+		readyState[i] = b; //設置玩家準備狀態
+		print("Ready "+i+" "+b); //顯示哪個玩家已經準備
 	}
 	
-	public void addPoint(String line){
+	public void addPoint(String line){ 
 		String[] spl = line.split(" ");
 		playerScore[Integer.parseInt(spl[1])]+=Integer.parseInt(spl[2]);
 	}
 	
-	public void detectEnd() throws IOException{
+	public void detectEnd() throws IOException{ //偵測遊戲是否結束
 		countAdd++;
-		if (countAdd == cardAmount[level]){
+		if (countAdd == cardAmount[level]){  //當卡牌全部被翻完就代表遊戲結束
 			PrintWriter out = new PrintWriter(socket.getOutputStream(),true);
 			out.println("GameOver");
 			print("GameOver");
 			writetxt("GameOver");
 			writeResult();
-			reset();
+			reset(); //遊戲結束後自動把遊戲重置
 		}
 	}
 	
-	public void reset(){
-		for (int i=0;i<4;i++) readyState[i] = (i==0)?true:false;
+	public void reset(){ //遊戲重置
+		for (int i=0;i<4;i++) readyState[i] = (i==0)?true:false; //把所有玩家的準備狀態設為尚未準備
 		for (int i=0;i<4;i++) playerScore[i] = 0;
-		round = -1;
-		rounds = 1;
-		countAdd=0;
+		round = -1; //把可翻牌的玩家號碼設成-1，代表還沒有玩家能夠翻牌
+		rounds = 1; //把回合數重置
+		countAdd=0; //已成功翻開的卡片數量重置
 	}
 	
 	public void closeConnect(){ //斷開連線的function
@@ -215,12 +216,12 @@ class ServerThread extends Server implements Runnable {
 		}
 	}
 
-	public void writetxt(String line){
+	public void writetxt(String line){ //撰寫紀錄檔
 		try{
 			File file =new File("../game_detail.txt");
 			FileWriter fileWritter = new FileWriter(file,true);
 			BufferedWriter bufferWritter = new BufferedWriter(fileWritter);
-			bufferWritter.write(line);
+			bufferWritter.write(line); //把收到的訊息寫在txt上
 			bufferWritter.newLine();
 			bufferWritter.close();
 		}catch(IOException e){

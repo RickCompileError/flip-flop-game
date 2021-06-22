@@ -74,13 +74,14 @@ public class Client{
 		}
 	}
 	
-	public void deliver(String msg){
+	public void deliver(String msg){ //傳送訊息
 		out.println(msg);
 	}
 	
 	public void execute(String msg){
 		String[] str = msg.split(" ");
 		System.out.println("From server: "+msg);
+		//接收到伺服器的訊息後，對不同的字串做出相對應的行為
 		switch (str[0]){ // search instruction
 		case "Number":
 			player.setPlayerNumber(Integer.parseInt(str[1]));
@@ -188,9 +189,9 @@ class Game extends JFrame {
 	private int firstOpen=-1; // every round first opened card
 	private int secondOpen=-1; // every round second opened card
 	
-	public Game(Client client){
+	public Game(Client client){ //設置客戶端的遊戲畫面以及內容
 		this.client = client;
-		LoginPane(main);
+		LoginPane(main); //先進入登入介面
 		setContentPane(main);
 		setTimer();
 		setTitle("MakeYouCry");
@@ -201,7 +202,7 @@ class Game extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 	
-	public void LoginPane(Container pane) {
+	public void LoginPane(Container pane) { //設置登入介面
 		// component initialize
 		JLabel t1 = new JLabel("Name: ");
 		JLabel t2 = new JLabel("IP: ");
@@ -212,13 +213,14 @@ class Game extends JFrame {
 		confirm = new JButton("OK");
 		mmb = new MyMenuBar();
 		// confirm button add actionlistener
-		confirm.addActionListener(new ActionListener(){
+		confirm.addActionListener(new ActionListener(){ //當按下OK後就代表正式連線進入遊戲
 			public void actionPerformed(ActionEvent e){
 				connect();
 			}
 		});
 		// composing
 		mmb.setmenu(this);
+		//登入介面排版
 		pane.setLayout(new GridBagLayout());
 		pane.setBackground(Color.YELLOW);
 		pane.add(t1, new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(5, 5, 5, 5), 0, 0));
@@ -235,7 +237,7 @@ class Game extends JFrame {
 		port = PortNumber.getText();
 		if (client.connect(IP,Integer.valueOf(port))){
 			main.removeAll();
-			addComponentsToMainPane(main);
+			addComponentsToMainPane(main); //成功登入後進入遊戲介面
 			client.deliver("Name "+name);
 			client.deliver("GetInformation");
 			main.revalidate();
@@ -249,25 +251,25 @@ class Game extends JFrame {
 		}
 	}
 
-	public JPanel getGameZone(){
+	public JPanel getGameZone(){ //設置遊戲區介面部分
 		if (gaming_zone==null) gaming_zone = new JPanel();
 		gaming_zone.setBorder(BorderFactory.createTitledBorder("Game"));
 		gaming_zone.setLayout(new GridLayout(heightAmount[level],widthAmount[level]));
 		gameBtn = new MyButton[heightAmount[level]*widthAmount[level]];
 		cardImage = new ImageIcon[heightAmount[level]*widthAmount[level]];
-		for(int i = 0;i<heightAmount[level];i++)
+		for(int i = 0;i<heightAmount[level];i++) //根據所選難度，去設置卡牌數量
 			for(int j = 0;j<widthAmount[level];j++)
 				makeButton(gaming_zone, i*widthAmount[level]+j);
 		return gaming_zone;
 	}
 	
-	public void makeButton(Container pane, int number) {
+	public void makeButton(Container pane, int number) { //建立卡牌
         gameBtn[number] = new MyButton(number,Color.WHITE);
 		gameBtn[number].addActionListener(new GameAction(this));
         pane.add(gameBtn[number]);
 	}
 	
-	public JPanel getControl(){
+	public JPanel getControl(){ //設置控制區域介面
 		control = new JPanel();
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		control.setLayout(gridBagLayout);
@@ -294,7 +296,7 @@ class Game extends JFrame {
         ButtonGroup buttonGroup = new ButtonGroup();
 		rb = new JRadioButton[4];
         ItemListener degree = new ItemListener(){
-            public void itemStateChanged(ItemEvent e) {
+            public void itemStateChanged(ItemEvent e) { //更換難度等級
                 if(e.getStateChange()==e.SELECTED){
                     if(e.getSource() == rb[0]) level = 0;
                     if(e.getSource() == rb[1]) level = 1;
@@ -304,7 +306,7 @@ class Game extends JFrame {
                 }
             }
         };
-		for (int i=0;i<4;i++){
+		for (int i=0;i<4;i++){ //設置level的選項
 			rb[i] = new JRadioButton(String.valueOf(widthAmount[i]*heightAmount[i])+" cards");
 			if (i==0) rb[i].setSelected(true);
 			rb[i].addItemListener(degree);
@@ -324,14 +326,14 @@ class Game extends JFrame {
 		return control;
 	}
 	
-	public JPanel getScoreboard(){
+	public JPanel getScoreboard(){ //設置記分板介面
 		scoreboard = new JPanel();
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		scoreboard.setBorder(BorderFactory.createTitledBorder("Score"));
 		scoreboard.setLayout(gridBagLayout);
 		for (int i=0;i<4;i++){
-			String state = readyState[i]?"Ready":"Unready";
-			player[i] = new JLabel(playerName[i]+": ");
+			String state = readyState[i]?"Ready":"Unready"; //遊戲開始前顯示玩家準備的狀態
+			player[i] = new JLabel(playerName[i]+": "); //設置玩家名字在計分板上
 			score[i] = new JLabel(state);
 			score[i].setHorizontalAlignment(JLabel.RIGHT);
 			scoreboard.add(player[i], new GridBagConstraints(0, i, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(5, 5, 5, 5), 0, 0));
@@ -340,7 +342,7 @@ class Game extends JFrame {
 		return scoreboard;
 	}
 	
-	public JPanel getTextArea(){
+	public JPanel getTextArea(){ //設置聊天介面
 		text_area = new JPanel();
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		text_area.setBorder(BorderFactory.createTitledBorder("ChatBox"));
@@ -348,7 +350,7 @@ class Game extends JFrame {
 		chatbox = new JTextArea(20,20);
 		chatbox.setEditable(false); 
 		message = new JTextField(20);
-		message.addKeyListener(new KeyAdapter(){
+		message.addKeyListener(new KeyAdapter(){ //按下鍵盤的enter或是介面上的enter按鈕能發送訊息
 			public void keyPressed(KeyEvent e){
 				if (e.getKeyCode()==KeyEvent.VK_ENTER) deliverMsg();
 			}
@@ -366,7 +368,7 @@ class Game extends JFrame {
 		text_area.add(enter, new GridBagConstraints(1, 1, 1, 1, 1, 1, GridBagConstraints.SOUTH, GridBagConstraints.BOTH, new Insets(5, 5, 5, 5), 0, 0));
 		return text_area;
 	}
-	private void deliverMsg(){
+	private void deliverMsg(){ //傳送訊息
 		String msg = message.getText();
 		if (!msg.equals("")){
 			chatbox.append(playerName[playerNumber]+": "+msg+"\n");
@@ -375,7 +377,7 @@ class Game extends JFrame {
 		message.setText("");
 	}
 	
-	public JPanel getPlayerIP(){
+	public JPanel getPlayerIP(){ //設置玩家資料介面
 		player_IP = new JPanel();
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		player_IP.setBorder(BorderFactory.createTitledBorder("IP&port&name"));
@@ -387,7 +389,7 @@ class Game extends JFrame {
 		return player_IP;
 	}
 	
-	public void addComponentsToMainPane(Container pane) {
+	public void addComponentsToMainPane(Container pane) { //把剛才分別設置的介面放入主介面中
 		pane.setLayout(new GridBagLayout());
 		pane.add(getGameZone(),new GridBagConstraints(0, 0, 5, 5, 1, 1, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, new Insets(5, 5, 5, 5), 0, 0));
 		pane.add(getControl(),new GridBagConstraints(0, 5, 3, 1, 1, 1, GridBagConstraints.SOUTHWEST, GridBagConstraints.BOTH, new Insets(5, 5, 5, 5), 0, 0));
@@ -397,60 +399,60 @@ class Game extends JFrame {
 	}
 	
 /****************************Control button action****************************/	
-	public void checkStart(){
+	public void checkStart(){ //房主傳送是否能夠開始遊戲的訊息給伺服器
 		client.deliver("CheckStart");
 	}
-	public void start(){
+	public void start(){ 
 		client.deliver("Start");
-		cardImage = GenerateImage.generate(level,widthAmount[level]*heightAmount[level]);
+		cardImage = GenerateImage.generate(level,widthAmount[level]*heightAmount[level]); //產生與卡牌數量相同的圖片
 		for (int i=0;i<gameBtn.length;i++){
-			gameBtn[i].setImage(cardImage[i]);
-			client.deliver("SetImage "+i+" "+cardImage[i].toString());
+			gameBtn[i].setImage(cardImage[i]); //設置按鈕圖片
+			client.deliver("SetImage "+i+" "+cardImage[i].toString()); //顯示哪個按鈕設置哪一張圖片
 		}
 		startGame();
 	}
 	public void ready(){
-		readyState[playerNumber] = readyState[playerNumber]?false:true;
+		readyState[playerNumber] = readyState[playerNumber]?false:true; //設置準備狀態
 		String state = readyState[playerNumber]?"Ready":"Unready";
 		player[playerNumber].setText(playerName[playerNumber]+": ");
-		score[playerNumber].setText(state);
-		client.deliver("Ready "+playerNumber+" "+String.valueOf(readyState[playerNumber]));
+		score[playerNumber].setText(state); //在記分板上顯示玩家的準備狀態
+		client.deliver("Ready "+playerNumber+" "+String.valueOf(readyState[playerNumber])); //在系統顯示幾號玩家是否準備
 	}
-	public void updateLevel(){
+	public void updateLevel(){ //更新難度
 		renewLevelSize();
-		client.deliver("Level "+level);
+		client.deliver("Level "+level); //在系統顯示目前難度等級
 	}
-	public void renewLevelSize(){
+	public void renewLevelSize(){ //重整遊戲區域介面，把按鈕數量設置為對應難度的卡牌數量
 		gaming_zone.removeAll();
 		main.add(getGameZone(),new GridBagConstraints(0, 0, 5, 5, 1, 1, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, new Insets(5, 5, 5, 5), 0, 0));
 		gaming_zone.revalidate();
 		gaming_zone.repaint();
 		pack();
 	}
-	public void reset(){
+	public void reset(){ //遊戲重置
 		systemReset();
 		client.deliver("Reset");
 	}
-	public void replay(){
+	public void replay(){ //重播遊玩過程
 		new Replay("../game_detail.txt");
 	}
 /****************************Control button action****************************/	
 /***************************Instruction from server***************************/
-	public void setPlayerNumber(int n){
+	public void setPlayerNumber(int n){ //設置玩家的號碼
 		playerNumber = n;
 		if (playerNumber == 0) honorButtonOpenSet();
 		if (playerNumber != 0) playerButtonOpenSet();
 	}
 	
-	public void settlement(){
-		new Settlement(this,playerName,playerScore);
+	public void settlement(){ //結算功能
+		new Settlement(this,playerName,playerScore); //輸出玩家名稱與分數去做排名，顯示結算畫面
 		systemReset();
 	}
 	
-	public void systemReset(){
-		if (playerNumber==0) honorButtonOpenSet();
-		else playerButtonOpenSet();
-		for (int i=0;i<4;i++){
+	public void systemReset(){ //重置遊戲
+		if (playerNumber==0) honorButtonOpenSet(); //把房主的控制區按鈕打開
+		else playerButtonOpenSet(); //把玩家的控制區按鈕打開
+		for (int i=0;i<4;i++){ //把玩家的狀態設置為尚未準備
 			readyState[i] = (i==0)?true:false;
 			playerScore[i]=0;
 			String state = readyState[i]?"Ready":"Unready";
@@ -464,76 +466,76 @@ class Game extends JFrame {
 		renewLevelSize();
 	}
 		
-	private void honorButtonOpenSet(){
+	private void honorButtonOpenSet(){ //設定房主控制介面
 		start.setEnabled(true);
 		ready.setEnabled(false);
 		reset.setEnabled(false);
 		replay.setEnabled(true);
 		for (JRadioButton tmp: rb) tmp.setEnabled(true);
 	}
-	private void playerButtonOpenSet(){
+	private void playerButtonOpenSet(){ //設定玩家控制介面
 		start.setEnabled(false);
 		ready.setEnabled(true);
 		reset.setEnabled(false);
 		replay.setEnabled(true);
 		for (JRadioButton tmp: rb) tmp.setEnabled(false);
 	}
-	public void setPlayerName(int n, String name){
+	public void setPlayerName(int n, String name){ //設置玩家名稱
 		playerName[n] = name;
 	}
-	public void setReadyState(int n, String b){
+	public void setReadyState(int n, String b){ //設置玩家狀態
 		readyState[n] = Boolean.valueOf(b);
 		String state = readyState[n]?"Ready":"Unready";
 		player[n].setText(playerName[n]+": ");
 		score[n].setText(state);
 	}
-	public void setLevel(int n){
+	public void setLevel(int n){ //設置遊戲難度
 		level = n;
 		renewLevelSize();
 	}
-	public void appendMessage(int n,String msg){
+	public void appendMessage(int n,String msg){ //在聊天區域貼上訊息
 		chatbox.append(playerName[n]+": "+msg+"\n");
 	}
-	public void startGame(){
-		for (MyButton tmp: gameBtn) tmp.setEnabled(true);
+	public void startGame(){ 
+		for (MyButton tmp: gameBtn) tmp.setEnabled(true); //開始遊戲時，把卡牌的按鈕設置為可以點擊的狀態
 		for (int i=0;i<4;i++){
-			player[i].setText(playerName[i]+": ");
+			player[i].setText(playerName[i]+": "); //把記分板的玩家準備狀態變為個別的分數
 			score[i].setText(String.valueOf(playerScore[i]));
 		}
-		if (playerNumber == 0) honorButtonCloseSet();
-		if (playerNumber != 0) playerButtonCloseSet();
+		if (playerNumber == 0) honorButtonCloseSet(); //房主的控制介面設定
+		if (playerNumber != 0) playerButtonCloseSet(); //玩家的控制介面設定
 		hasBeenOpened = new boolean[gameBtn.length];
 		Arrays.fill(hasBeenOpened,false);
 	}
-	private void honorButtonCloseSet(){
+	private void honorButtonCloseSet(){ //設定房主的控制介面，把按鈕關閉，只留下reset按鈕
 		start.setEnabled(false);
 		reset.setEnabled(true);
 		for (JRadioButton tmp: rb) tmp.setEnabled(false);
 	}
-	private void playerButtonCloseSet(){
+	private void playerButtonCloseSet(){ //設置玩家的控制介面，把ready按鈕關閉
 		ready.setEnabled(false);
 	}
-	public void startFlop(int number,int round){
+	public void startFlop(int number,int round){ //在聊天區域各自顯示目前第幾輪以及是誰的回合
 		if (playerNumber == number){
 			flop = true;
 			chatbox.append("System: round "+round+" your term\n");
 		}
 	}
-	public void flopCard(int number){
+	public void flopCard(int number){ //翻牌
 		gameBtn[number].showPos();
 		gameBtn[number].repaint();
 		hasBeenOpened[number] = true;
 	}
-	public void flowCard(int number){
+	public void flowCard(int number){ //蓋牌
 		gameBtn[number].showNeg();
 		gameBtn[number].repaint();
 		hasBeenOpened[number] = false;
 	}
-	public void addPoint(int n,int s){
+	public void addPoint(int n,int s){ //加分
 		playerScore[n]+=s;
 		score[n].setText(String.valueOf(playerScore[n]));
 	}
-	public void setButtonImage(int n,String url){
+	public void setButtonImage(int n,String url){ //設置卡牌圖片
 		cardImage[n] = new ImageIcon(url);
 		gameBtn[n].setImage(cardImage[n]);
 	}
@@ -547,14 +549,14 @@ class Game extends JFrame {
 		});
 		timer.setRepeats(false);
 	}
-	public boolean canFlop(){
+	public boolean canFlop(){ //判斷目前是否可翻牌
 		return flop;
 	}
-	public boolean tryOpen(int n){
+	public boolean tryOpen(int n){ //翻牌
 		if (hasBeenOpened[n]) return false;
 		if (firstOpen==-1){
 			flopCard(n);
-			client.deliver("Flop "+n);
+			client.deliver("Flop "+n); //傳送翻了哪張牌的訊息給伺服器端
 			firstOpen = n;
 		}else{
 			flopCard(n);
@@ -564,18 +566,18 @@ class Game extends JFrame {
 		}
 		return true;
 	}
-	private void compareResult(){
+	private void compareResult(){  //判斷兩張牌是否相同
 		if (gameBtn[firstOpen].getImageURL().equals(gameBtn[secondOpen].getImageURL())){
 			client.deliver("Add "+String.valueOf(playerNumber)+" "+String.valueOf(correctScore));
-			addPoint(playerNumber,correctScore);
-			correctScore+=10;
-			firstOpen = -1;
+			addPoint(playerNumber,correctScore); //若相同則加分
+			correctScore+=10; //連續翻對的話每次加的分數就越高
+			firstOpen = -1; 
 			secondOpen = -1;
 		}else{
 			timer.start();
 		}
 	}
-	private void flow(){
+	private void flow(){ //當兩張牌不一樣時則把牌蓋回去
 		flowCard(firstOpen);
 		client.deliver("Flow "+firstOpen);
 		flowCard(secondOpen);
@@ -584,11 +586,11 @@ class Game extends JFrame {
 		client.deliver("RoundEnd");
 		firstOpen = -1;
 		secondOpen = -1;
-		correctScore = 10;
+		correctScore = 10; //把每次加分的分數重置
 	}
 /***************************Start play game***********************************/
 }
-class GameAction implements ActionListener{
+class GameAction implements ActionListener{ //設置按鈕的action listener
 	
 	Game f;
 	

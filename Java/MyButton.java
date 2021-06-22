@@ -21,10 +21,10 @@ public class MyButton extends JButton{
 	public int getNumber(){
 		return number;
 	}
-	public void showPos(){
+	public void showPos(){ //把牌的圖片設為正面
 		current = pos;
 	}
-	public void showNeg(){
+	public void showNeg(){ //把牌的圖片設為背面
 		current = neg;
 	}
 	public String getImageURL(){
@@ -33,7 +33,7 @@ public class MyButton extends JButton{
 	public void setImage(ImageIcon pos){
 		this.pos = pos;
 	}
-	public void paintComponent(Graphics g){
+	public void paintComponent(Graphics g){ //調整卡牌圖片為按鈕的大小
 		super.paintComponent(g);
 		g.drawImage(current.getImage(),0,0,this.getWidth(),this.getHeight(),this);
 	}
