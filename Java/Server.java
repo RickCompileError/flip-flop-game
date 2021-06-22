@@ -2,6 +2,7 @@
 import java.net.*;
 import java.io.*;
 import java.util.*;
+import java.text.*;
 
 public class Server{
 	
@@ -245,6 +246,8 @@ class ServerThread extends Server implements Runnable {
 		try{
 			File file = new File("../game_result.txt");
 			BufferedWriter bw = new BufferedWriter(new FileWriter(file,true));
+			bw.write(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new Date()));
+			bw.newLine();
 			for (int i=0;i<4;i++){
 				bw.write("No."+(i+1)+" "+tmpName[i]+" "+playerScore[i]);
 				bw.newLine();
