@@ -10,167 +10,204 @@ import java.util.Arrays;
 
 class Replay extends JFrame {
 	
-	JPanel main = new JPanel();
+	JPanel myPanel = new JPanel();
+	
+	BufferedReader br = null;
 	
 	Timer timer = null;
-	MyButton[] gameBtn; // game panel game button
 	int[] widthAmount={5,8,10,10}; // card row quantity
 	int[] heightAmount={4,5,6,8}; // card column quantity
 	int level = 0; // game difficulty
-	boolean flop = false; // if player has authority to flop
-	private boolean[] hasBeenOpened; // an array to determine if card has been opened
+	private MyButton[] gameBtn; // game panel game button
 	private ImageIcon[] cardImage; // an array represent card
-	private int firstOpen=-1; // every round first opened card
-	private int secondOpen=-1; // every round second opened card
+	private boolean gameExist = false;
 	
-	public Replay(){ //設置客戶端的遊戲畫面以及內容
-		test();
-		setContentPane(main);
+	public Replay(String filePath){ //設置客戶端的遊戲畫面以及內容
+		try{
+			myPanel.setLayout(new BorderLayout());
+			setReader(filePath);
+			findGame();
+			if (gameExist) setGame();
+			else setNull();
+			addButton();
+		}catch (IOException ioe){
+			ioe.printStackTrace();
+		}
+		setContentPane(myPanel);
 		setTitle("Replay");
 		setResizable(true);
 		setVisible(true);
 		pack();
+		setSize(600,800);
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
-	
 
-
-	public JPanel addComponentsToMainPane(Container pane) {  //設置遊戲區介面部分
-		pane.setLayout(new GridLayout(heightAmount[level],widthAmount[level]));
-		gameBtn = new MyButton[heightAmount[level]*widthAmount[level]];   
-		cardImage = new ImageIcon[heightAmount[level]*widthAmount[level]];  
-		for(int i = 0;i<heightAmount[level];i++)  //根據所選難度，去設置卡牌數量
-			for(int j = 0;j<widthAmount[level];j++)
-				makeButton(pane, i*widthAmount[level]+j);
-	}
-	
-	public void makeButton(Container pane, int number) {    //建立卡牌
-        gameBtn[number] = new MyButton(number,Color.WHITE);
-		gameBtn[number].addActionListener(new GameAction(this));
-        pane.add(gameBtn[number]);
-	}
-	
-	public void test() throws IOException{
-		FileReader fr = new FileReader("game_detail.txt");
-		BufferedReader br = new BufferedReader(fr);
-		Scanner scn =new Scanner(br);
-		
-		while(scn.hasNextLine()) {
-			String[] s = scn.nextLine().split(" ");
-			if(s[0].equals("Level"))
-				setLevel(Integer.parseInt(s[1]));
-			if(s[0].equals("Start")){
-				//addComponentsToMainPane(main);
+	private void addButton(){
+		JPanel jp = new JPanel();
+		JButton startButton = new JButton("Start");
+		startButton.setFocusable(false);
+		startButton.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
 				start();
+			}
+		});
+		JButton nextButton = new JButton("Next");
+		nextButton.setFocusable(false);
+		nextButton.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				next();
+			}
+		});
+		JButton stopButton = new JButton("Stop");
+		stopButton.setFocusable(false);
+		stopButton.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				timer.stop();
+			}
+		});
+		JButton closeButton = new JButton("close");
+		closeButton.setFocusable(false);
+		closeButton.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				if (timer!=null) timer.stop();
+				dispose();
+			}
+		});
+		jp.setLayout(new FlowLayout(FlowLayout.CENTER));
+		jp.add(startButton);
+		jp.add(stopButton);
+		jp.add(nextButton);
+		jp.add(closeButton);
+		if (!gameExist){
+			startButton.setEnabled(false);
+			nextButton.setEnabled(false);
+			stopButton.setEnabled(false);
+			closeButton.setEnabled(false);
+		}
+		myPanel.add(jp,BorderLayout.SOUTH);
+	}
+
+	private void setReader(String fp){
+		File file = new File(fp);
+		try{
+			FileReader fr = new FileReader(file);
+			br = new BufferedReader(fr);
+		}catch (FileNotFoundException fnfe){
+			try{
+				file.createNewFile();
+			}catch (IOException ioe){
+				ioe.printStackTrace();
 			}
 		}
 	}
 	
-	
-	
-	
-	
-	
-	
-	public void start(){  //按下start後的行為
-		cardImage = GenerateImage.generate(level,widthAmount[level]*heightAmount[level]);  //產生與卡牌數量相同的圖片
-		for (int i=0;i<gameBtn.length;i++){
-			gameBtn[i].setImage(cardImage[i]);  //設置按鈕圖片
+	private void findGame() throws IOException{
+		String ins = null;
+		if (br!=null){
+			ins = br.readLine();
+			while (ins!=null && !ins.equals("Start")){
+				String[] s = ins.split(" ");
+				if(s[0].equals("Level"))
+					level = Integer.parseInt(s[1]);
+				ins = br.readLine();
+			}
 		}
-		hasBeenOpened = new boolean[gameBtn.length];
-		Arrays.fill(hasBeenOpened,false);
+		if (ins==null) gameExist = false;
+		else if (ins.equals("Start")) gameExist = true;
 	}
 	
-	public void renewLevelSize(){  //重整遊戲區域介面，把按鈕數量設置為對應難度的卡牌數量
-		main.removeAll();
-		addComponentsToMainPane(main);
-		main.revalidate();
-		main.repaint();
+	private void setGame() throws IOException{
+		JPanel jp = new JPanel();
+		jp.setLayout(new GridLayout(heightAmount[level],widthAmount[level]));
+		gameBtn = new MyButton[heightAmount[level]*widthAmount[level]];
+		cardImage = new ImageIcon[heightAmount[level]*widthAmount[level]];
+		String ins;
+		String[] s;
+		for (int i=0;i<widthAmount[level]*heightAmount[level];i++){
+			ins = br.readLine();
+			s = ins.split(" ");
+			cardImage[i] = new ImageIcon(s[2]);
+			gameBtn[i] = new MyButton(i,Color.WHITE);
+			gameBtn[i].setImage(cardImage[i]);
+			jp.add(gameBtn[i]);
+		}
+		myPanel.add(jp,BorderLayout.CENTER);
+	}
+	
+	private void setNull(){
+		JLabel jl = new JLabel("No Record Can Replay!");
+		jl.setFont(new Font("MV Boli",Font.ITALIC,20));
+		jl.setHorizontalTextPosition(JLabel.CENTER);
+		jl.setVerticalTextPosition(JLabel.CENTER);
+		jl.setHorizontalAlignment(JLabel.CENTER);
+		jl.setVerticalAlignment(JLabel.CENTER);
+		myPanel.add(jl,BorderLayout.CENTER);
+	}
+	
+	private void start(){
+		setTimer();
+		timer.start();
+	}
+	
+	private void next(){
+		myPanel.removeAll();
+		try{
+			findGame();
+			if (gameExist) setGame();
+			else setNull();
+			addButton();
+		}catch (IOException ioe){
+			ioe.printStackTrace();
+		}
+		myPanel.revalidate();
+		myPanel.repaint();
 		pack();
-	}
-	public void reset(){ //遊戲重置
-		systemReset();
-	}
-
-	public void systemReset(){ //重置遊戲
-		flop = false;
-		firstOpen=-1;
-		secondOpen=-1;
-		renewLevelSize();
-	}
-		
-	public void setLevel(int n){ //設置遊戲難度
-		level = n;
-		renewLevelSize();
-	}
-
-	public void flopCard(int number){ //翻牌
-		gameBtn[number].showPos();
-		gameBtn[number].repaint();
-		hasBeenOpened[number] = true;
-	}
-	public void flowCard(int number){ //蓋牌
-		gameBtn[number].showNeg();
-		gameBtn[number].repaint();
-		hasBeenOpened[number] = false;
+		setSize(600,800);
+		setLocationRelativeTo(null);
 	}
 	
 	public void setTimer(){
-		timer = new Timer(500,new ActionListener(){
+		if (timer!=null) return;
+		timer = new Timer(100,new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				flow();
+				try{
+					String instruction = br.readLine();
+					System.out.println(instruction);
+					String[] ins = null;
+					String f = "";
+					while (instruction!=null){
+						ins = instruction.split(" ");
+						f = ins[0];
+						if (f.equals("Flop") || f.equals("Flow") || f.equals("GameOver") || f.equals("Reset")) break;
+						instruction = br.readLine();
+					}
+					if (f.equals("Flop")) flop(Integer.parseInt(ins[1]));
+					if (f.equals("Flow")) flow(Integer.parseInt(ins[1]));
+					if (f.equals("GameOver") || f.equals("Reset") || ins==null) gameOver();
+				}catch (IOException ioe){
+					ioe.printStackTrace();
+				}
 			}
 		});
-		timer.setRepeats(false);
-	}
-	public boolean canFlop(){ //判斷目前是否可翻牌
-		return flop;
-	}
-	public boolean tryOpen(int n){ //翻牌
-		if (hasBeenOpened[n]) return false;
-		if (firstOpen==-1){
-			flopCard(n);
-			firstOpen = n;
-		}else{
-			flopCard(n);
-			secondOpen = n;
-			compareResult();
-		}
-		return true;
-	}
-	private void compareResult(){ //判斷兩張牌是否相同
-		if (gameBtn[firstOpen].getImageURL().equals(gameBtn[secondOpen].getImageURL())){
-			firstOpen = -1;
-			secondOpen = -1;
-		}else{
-			timer.start();
-		}
-	}
-	private void flow(){ //當兩張牌不一樣時則把牌蓋回去
-		flowCard(firstOpen);
-		flowCard(secondOpen);
-		flop = false;
-		firstOpen = -1;
-		secondOpen = -1;
-	}
-}
-				
-/***************************Start play game***********************************/
-
-//設置按鈕的action listener
-class GameAction implements ActionListener{   
-	
-	Game f;
-	
-	public GameAction(Game f){
-		this.f = f;
 	}
 	
-	public void actionPerformed(ActionEvent e){
-		if (f.canFlop()){
-			MyButton tmp = (MyButton)e.getSource();
-			f.tryOpen(tmp.getNumber());
-		}
+	private void flop(int n){
+		gameBtn[n].showPos();
+		gameBtn[n].repaint();
+	}
+	
+	private void flow(int n){
+		gameBtn[n].showNeg();
+		gameBtn[n].repaint();
+	}
+	
+	private void gameOver(){
+		timer.stop();
+		next();
+	}
+	
+	public static void main(String args[]){
+		new Replay("../game_detail.txt");
 	}
 }

@@ -162,6 +162,7 @@ class Game extends JFrame {
 	JButton start; // control panel start button
 	JButton ready; // control panel ready button
 	JButton reset; // control panel reset button
+	JButton replay; // control panel replay button
 	JRadioButton[] rb; // control panel level button
 	JTextArea chatbox; // chatbox panel chat room
 	JTextField message; // chatbox panel input message field
@@ -240,6 +241,7 @@ class Game extends JFrame {
 			main.revalidate();
 			main.repaint();
 			pack();
+			setLocationRelativeTo(null);
 		}else{
 			PlayerName.setText("");
 			IPAddress.setText("");
@@ -282,6 +284,11 @@ class Game extends JFrame {
 		reset.addActionListener(new GameConfirmAction(this));
 		reset.setFocusable(false);
 		
+		replay = new JButton("Replay");
+		replay.addActionListener(new GameConfirmAction(this));
+		replay.setFocusable(false);
+		replay.setEnabled(false);
+		
         JLabel levelLabel = new JLabel("Choose level");
 		
         ButtonGroup buttonGroup = new ButtonGroup();
@@ -308,9 +315,10 @@ class Game extends JFrame {
         control.add(levelLabel, new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(5, 5, 5, 5), 0, 0));
 		for (int i=0;i<4;i++)
 			control.add(rb[i], new GridBagConstraints(i+1, 0, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(5, 5, 5, 5), 0, 0));
-		control.add(reset, new GridBagConstraints(4, 1, 1, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.BOTH, new Insets(5, 5, 5, 5), 0, 0));
-		control.add(start, new GridBagConstraints(2, 1, 1, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.BOTH, new Insets(5, 5, 5, 5), 0, 0));
-		control.add(ready, new GridBagConstraints(3, 1, 1, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.BOTH, new Insets(5, 5, 5, 5), 0, 0));
+		control.add(start, new GridBagConstraints(1, 1, 1, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.BOTH, new Insets(5, 5, 5, 5), 0, 0));
+		control.add(ready, new GridBagConstraints(2, 1, 1, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.BOTH, new Insets(5, 5, 5, 5), 0, 0));
+		control.add(reset, new GridBagConstraints(3, 1, 1, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.BOTH, new Insets(5, 5, 5, 5), 0, 0));
+		control.add(replay, new GridBagConstraints(4, 1, 1, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.BOTH, new Insets(5, 5, 5, 5), 0, 0));
 		control.setBorder(BorderFactory.createTitledBorder("Control"));
 		
 		return control;
@@ -423,6 +431,9 @@ class Game extends JFrame {
 		systemReset();
 		client.deliver("Reset");
 	}
+	public void replay(){
+		new Replay("../game_detail.txt");
+	}
 /****************************Control button action****************************/	
 /***************************Instruction from server***************************/
 	public void setPlayerNumber(int n){
@@ -457,12 +468,14 @@ class Game extends JFrame {
 		start.setEnabled(true);
 		ready.setEnabled(false);
 		reset.setEnabled(false);
+		replay.setEnabled(true);
 		for (JRadioButton tmp: rb) tmp.setEnabled(true);
 	}
 	private void playerButtonOpenSet(){
 		start.setEnabled(false);
 		ready.setEnabled(true);
 		reset.setEnabled(false);
+		replay.setEnabled(true);
 		for (JRadioButton tmp: rb) tmp.setEnabled(false);
 	}
 	public void setPlayerName(int n, String name){
@@ -603,5 +616,6 @@ class GameConfirmAction implements ActionListener{
 		if (tmp.getText().equals("Start")) f.checkStart();
 		if (tmp.getText().equals("Ready")) f.ready();
 		if (tmp.getText().equals("Reset")) f.reset();
+		if (tmp.getText().equals("Replay")) f.replay();
 	}
 }

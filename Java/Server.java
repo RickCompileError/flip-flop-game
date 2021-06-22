@@ -77,7 +77,7 @@ class ServerThread extends Server implements Runnable {
 				System.out.println("From "+socketName+": "+line); //debug
 				String[] instruction = line.split(" ");
 				if (line == null) break; //當達成條件時則跳出迴圈
-				writetxt(socketName ,line);
+				writetxt(line);
 				switch (instruction[0]){
 				case "GetInformation": // deliver another player information (name and state)
 					transmitInfo();
@@ -187,6 +187,7 @@ class ServerThread extends Server implements Runnable {
 			PrintWriter out = new PrintWriter(socket.getOutputStream(),true);
 			out.println("GameOver");
 			print("GameOver");
+			writetxt("GameOver");
 			writeResult();
 			reset();
 		}
@@ -214,7 +215,7 @@ class ServerThread extends Server implements Runnable {
 		}
 	}
 
-	public void writetxt(String socketName,String line){
+	public void writetxt(String line){
 		try{
 			File file =new File("../game_detail.txt");
 			FileWriter fileWritter = new FileWriter(file,true);
