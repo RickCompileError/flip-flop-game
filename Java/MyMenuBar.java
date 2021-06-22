@@ -118,12 +118,12 @@ public class MyMenuBar {
 	    clip.loop(Clip.LOOP_CONTINUOUSLY);
 	    clip.start();
     }
-	private void setPrimaryColor(Color color){
+	private void setPrimaryColor(Color color){ //設置最底層背景顏色
 		if (color != null) {
 			f.getContentPane().setBackground(color);
 		}
 	}
-	private void setSecondaryColor(Color color){
+	private void setSecondaryColor(Color color){  //統一設置各區塊版面顏色
 		if (color != null) {
 			if (f.gaming_zone != null) f.gaming_zone.setBackground(color);
 			if (f.control != null) f.control.setBackground(color);

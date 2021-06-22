@@ -541,7 +541,7 @@ class Game extends JFrame {
 	}
 /***************************Instruction from server***************************/
 /***************************Start play game***********************************/
-	public void setTimer(){
+	public void setTimer(){ //設定timer讓翻牌時不會馬上蓋回去
 		timer = new Timer(500,new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				flow();

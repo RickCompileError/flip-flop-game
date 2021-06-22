@@ -177,7 +177,7 @@ class ServerThread extends Server implements Runnable {
 		print("Ready "+i+" "+b); //顯示哪個玩家已經準備
 	}
 	
-	public void addPoint(String line){ 
+	public void addPoint(String line){  //加上得到的分數
 		String[] spl = line.split(" ");
 		playerScore[Integer.parseInt(spl[1])]+=Integer.parseInt(spl[2]);
 	}
@@ -186,7 +186,7 @@ class ServerThread extends Server implements Runnable {
 		countAdd++;
 		if (countAdd == cardAmount[level]){  //當卡牌全部被翻完就代表遊戲結束
 			PrintWriter out = new PrintWriter(socket.getOutputStream(),true);
-			out.println("GameOver");
+			out.println("GameOver");  //顯示gameover
 			print("GameOver");
 			writetxt("GameOver");
 			writeResult();
@@ -229,7 +229,7 @@ class ServerThread extends Server implements Runnable {
 		}
 	}
 	
-	public void writeResult(){
+	public void writeResult(){  //撰寫遊戲結果檔案
 		String[] tmpName = new String[4];
 		for (int i=0;i<4;i++) tmpName[i] = playerName[i];
 		String tmps;

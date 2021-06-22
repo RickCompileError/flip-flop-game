@@ -22,7 +22,7 @@ class Replay extends JFrame {
 	private ImageIcon[] cardImage; // an array represent card
 	private boolean gameExist = false;
 	
-	public Replay(String filePath){ //設置客戶端的遊戲畫面以及內容
+	public Replay(String filePath){ 
 		try{
 			myPanel.setLayout(new BorderLayout());
 			setReader(filePath);
@@ -43,7 +43,7 @@ class Replay extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 
-	private void addButton(){
+	private void addButton(){  //設置按鈕
 		JPanel jp = new JPanel();
 		JButton startButton = new JButton("Start");
 		startButton.setFocusable(false);
@@ -88,7 +88,7 @@ class Replay extends JFrame {
 		myPanel.add(jp,BorderLayout.SOUTH);
 	}
 
-	private void setReader(String fp){
+	private void setReader(String fp){ //讀取檔案
 		File file = new File(fp);
 		try{
 			FileReader fr = new FileReader(file);
@@ -102,7 +102,7 @@ class Replay extends JFrame {
 		}
 	}
 	
-	private void findGame() throws IOException{
+	private void findGame() throws IOException{ //讀取記錄檔中的紀錄
 		String ins = null;
 		if (br!=null){
 			ins = br.readLine();
@@ -135,7 +135,7 @@ class Replay extends JFrame {
 		myPanel.add(jp,BorderLayout.CENTER);
 	}
 	
-	private void setNull(){
+	private void setNull(){  //若記錄檔的內容結束時
 		JLabel jl = new JLabel("No Record Can Replay!");
 		jl.setFont(new Font("MV Boli",Font.ITALIC,20));
 		jl.setHorizontalTextPosition(JLabel.CENTER);
