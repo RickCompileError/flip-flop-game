@@ -8,7 +8,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.Arrays;
 
-class Replay extends JFrame {
+class Replay extends JFrame{
 	
 	JPanel myPanel = new JPanel();
 	
@@ -40,7 +40,7 @@ class Replay extends JFrame {
 		pack();
 		setSize(600,800);
 		setLocationRelativeTo(null);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 	}
 
 	private void addButton(){  //加入操作按鈕
